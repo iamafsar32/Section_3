@@ -1,4 +1,2 @@
-fastapi
-uvicorn
-pymongo
-python-multipart
+pymongo==4.8.0
+dnspython==2.6.1
