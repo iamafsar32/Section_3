@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product CRUD</title>
+</head>
+<body>
+
+<h1>Product CRUD Operation</h1>
+
+<input type="text" id="name" placeholder="Product Name"><br><br>
+<input type="number" id="price" placeholder="Price"><br><br>
+<input type="number" id="quantity" placeholder="Quantity"><br><br>
+
+<button onclick="addProduct()">Add Product</button>
+<button onclick="loadProducts()">Show Products</button>
+
+<h2>Products List</h2>
+<div id="result"></div>
+
+<script>
+
+const url = "http://127.0.0.1:8000/products";
+
+function addProduct() {
+
+    let product = {
+        name: document.getElementById("name").value,
+        price: parseFloat(document.getElementById("price").value),
+        quantity: parseInt(document.getElementById("quantity").value)
+    };
+
+    fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(product)
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadProducts();
+    });
+}
+
+function loadProducts() {
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+
+        let output = "";
+
+        data.forEach(item => {
+            output += `
+                <p>
+                ${item.name} - ₹${item.price} - Qty:${item.quantity}
+
+                <button onclick="deleteProduct('${item.id}')">
+                Delete
+                </button>
+                </p>
+            `;
+        });
+
+        document.getElementById("result").innerHTML = output;
+    });
+}
+
+function deleteProduct(id) {
+
+    fetch(url + "/" + id, {
+        method: "DELETE"
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadProducts();
+    });
+}
+
+</script>
+
+</body>
+</html>
